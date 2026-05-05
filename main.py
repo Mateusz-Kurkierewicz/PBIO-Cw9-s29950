@@ -10,10 +10,21 @@ def calculate_stats(sequence: str) -> dict:
     """Zwraca słownik ze statystykami sekwencji.
     Klucze: "A", "C", "G", "T" (wartości float, %),
            "GC" (wartość float, %)."""
+    counts = {"A": 0, "C": 0, "G": 0, "T": 0}
+    total_count = 0
+    for n in sequence:
+        if counts.get(n) is not None:
+            counts[n] += 1
+            total_count += 1
+    return {"A": counts["A"] / total_count,
+            "C": counts["C"] / total_count,
+            "G": counts["G"] / total_count,
+            "T": counts["T"] / total_count,
+            "GC": (counts["G"] + counts["C"]) / total_count}
 
 def insert_name(sequence: str, name: str) -> str:
-    """Wstawia imię w losową pozycję sekwencji.
-    Imię zapisane małymi literami."""
+    index = int(rnd.random() * len(sequence))
+    return sequence[:index] + name.lower() + sequence[index:]
 
 def format_fasta(seq_id: str, description: str,
                  sequence: str, line_width: int = 80) -> str:
@@ -26,7 +37,9 @@ def validate_positive_int(prompt: str,
     W przypadku błędu powtarza pytanie."""
 
 def main():
-    print(generate_sequence(100))
+    sequence = insert_name(generate_sequence(100), "Mateusz")
+    print(sequence)
+    print(calculate_stats(sequence))
 
 if __name__ == "__main__":
     main()
