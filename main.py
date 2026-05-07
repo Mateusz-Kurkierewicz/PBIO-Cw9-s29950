@@ -7,9 +7,6 @@ def generate_sequence(length: int) -> str:
     return sequence
 
 def calculate_stats(sequence: str) -> dict:
-    """Zwraca słownik ze statystykami sekwencji.
-    Klucze: "A", "C", "G", "T" (wartości float, %),
-           "GC" (wartość float, %)."""
     counts = {"A": 0, "C": 0, "G": 0, "T": 0}
     total_count = 0
     for n in sequence:
@@ -28,7 +25,11 @@ def insert_name(sequence: str, name: str) -> str:
 
 def format_fasta(seq_id: str, description: str,
                  sequence: str, line_width: int = 80) -> str:
-    """Zwraca sformatowany rekord FASTA jako string."""
+    formatted = f">{seq_id} {description}"
+    lines = [sequence[i:i + line_width] for i in range(0, len(sequence), line_width)]
+    for l in lines:
+        formatted += f"\n{l}"
+    return formatted
 
 def validate_positive_int(prompt: str,
                           min_val: int = 1,
@@ -40,6 +41,7 @@ def main():
     sequence = insert_name(generate_sequence(100), "Mateusz")
     print(sequence)
     print(calculate_stats(sequence))
+    print(format_fasta("Id", "Opis", sequence))
 
 if __name__ == "__main__":
     main()
