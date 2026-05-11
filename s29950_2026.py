@@ -141,20 +141,35 @@ def create_sequence_with_distribution():
     sequence = generate_sequence_with_distribution(sequence_length, probabilities)
     print(sequence)
 
+def find_all(sequence: str, part: str) -> list:
+    part_len = len(part)
+    indexes = []
+    if len(sequence) < part_len:
+        print("Długość motywu jest za duża!")
+        return indexes
+    for i in range(len(sequence) - part_len + 1):
+        fragment = sequence[i:i+part_len]
+        if fragment == part:
+            indexes.append(i + 1)
+    return indexes
+
 def main():
-    create_sequence_with_distribution()
-    # create_mRNA()
+    sequence_length_input = input("Podaj długość sekwencji: ")
+    sequence_length = validate_positive_int(sequence_length_input)
+    sequence_id = get_sequence_id()
+    sequence_description = input("Podaj opis sekwencji: ")
+    name = input("Podaj imię: ")
+    sequence = insert_name(generate_sequence(sequence_length), name)
+    print(format_stats(calculate_stats(sequence)))
+    fasta = format_fasta(sequence_id, sequence_description, sequence)
+    file_name = save_to_file(fasta, "Sequences.fasta")
+    print(f"Zapisano sekwencję do pliku {file_name}")
     # create_multiple_sequences()
-    # sequence_length_input = input("Podaj długość sekwencji: ")
-    # sequence_length = validate_positive_int(sequence_length_input)
-    # sequence_id = get_sequence_id()
-    # sequence_description = input("Podaj opis sekwencji: ")
-    # name = input("Podaj imię: ")
-    # sequence = insert_name(generate_sequence(sequence_length), name)
-    # print(format_stats(calculate_stats(sequence)))
-    # fasta = format_fasta(sequence_id, sequence_description, sequence)
-    # file_name = save_to_file(fasta, "Sequences.fasta")
-    # print(f"Zapisano sekwencję do pliku {file_name}")
+    # create_mRNA()
+    # create_sequence_with_distribution()
+    part = input("Podaj motyw do wyszukania w sekwencji: ")
+    indexes = find_all(sequence, part)
+    print(f'Podany motyw występuje na następujących indeksach: {indexes}')
 
 if __name__ == "__main__":
     main()
