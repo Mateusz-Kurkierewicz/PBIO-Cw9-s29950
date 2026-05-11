@@ -1,4 +1,6 @@
 import random as rnd
+import os
+from typing import override
 
 
 def generate_sequence(length: int) -> str:
@@ -65,11 +67,13 @@ def validate_sequence_id(prompt: str) -> bool:
     has_whitespaces = any(is_space(c) for c in prompt)
     return not has_whitespaces
 
-def save_to_file(sequence: str) -> str:
-    file_name = "Sequences.fasta"
-    with open(file=file_name, mode="w") as file:
+def save_to_file(sequence: str, file_name: str, override=True) -> str:
+    mode = "w" if override else "a"
+    is_empty = not os.path.exists(file_name) or os.path.getsize(file_name) == 0
+    if not is_empty and not override:
+        sequence = "\n\n" + sequence
+    with open(file=file_name, mode=mode) as file:
         file.writelines(sequence)
-        file.close()
     return file_name
 
 def get_sequence_id() -> str:
@@ -79,17 +83,37 @@ def get_sequence_id() -> str:
         sequence_id = input("Podaj id sekwencji: ")
     return sequence_id
 
+def create_multiple_sequences():
+    try:
+        sequence_count = int(input("Podaj ilość sekwencji: "))
+    except ValueError:
+        print("Nieprawidłowa ilość sekwencji do wygenerowania!")
+        create_multiple_sequences()
+        return
+    for i in range(sequence_count):
+        sequence = generate_sequence(2000)
+        seq_id = i + 1
+        id_str = str(seq_id)
+        if seq_id < 10:
+            id_str = "0" + id_str
+        if seq_id < 100:
+            id_str = "0" + id_str
+        fasta = format_fasta(f"Seq_{id_str}", "", sequence)
+        should_override = True if i == 0 else False
+        save_to_file(fasta, "multi_sequences.fasta", should_override)
+
 def main():
-    sequence_length_input = input("Podaj długość sekwencji: ")
-    sequence_length = validate_positive_int(sequence_length_input)
-    sequence_id = get_sequence_id()
-    sequence_description = input("Podaj opis sekwencji: ")
-    name = input("Podaj imię: ")
-    sequence = insert_name(generate_sequence(sequence_length), name)
-    print(format_stats(calculate_stats(sequence)))
-    fasta = format_fasta(sequence_id, sequence_description, sequence)
-    file_name = save_to_file(fasta)
-    print(f"Zapisano sekwencję do pliku {file_name}")
+    create_multiple_sequences()
+    # sequence_length_input = input("Podaj długość sekwencji: ")
+    # sequence_length = validate_positive_int(sequence_length_input)
+    # sequence_id = get_sequence_id()
+    # sequence_description = input("Podaj opis sekwencji: ")
+    # name = input("Podaj imię: ")
+    # sequence = insert_name(generate_sequence(sequence_length), name)
+    # print(format_stats(calculate_stats(sequence)))
+    # fasta = format_fasta(sequence_id, sequence_description, sequence)
+    # file_name = save_to_file(fasta, "Sequences.fasta")
+    # print(f"Zapisano sekwencję do pliku {file_name}")
 
 if __name__ == "__main__":
     main()
