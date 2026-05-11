@@ -5,6 +5,7 @@ import os
 s29950
 11.05.2026
 poniższy program stanowi rozwiązanie zadania 9 z przedmiotu Podstawy Bioinformatyki
+z funkcjonalności dodatkowych zostały wykonane punkty 1, 2, 3 oraz 5
 """
 
 def generate_sequence(length: int) -> str:
@@ -258,7 +259,7 @@ def main():
     sequence = insert_name(generate_sequence(sequence_length), name)
     print(format_stats(calculate_stats(sequence)))
     fasta = format_fasta(sequence_id, sequence_description, sequence)
-    file_name = save_to_file(fasta, "Sequences.fasta")
+    file_name = save_to_file(fasta, f"{sequence_id}.fasta")
     print(f"Zapisano sekwencję do pliku {file_name}")
     create_multiple_sequences()
     create_mRNA()
