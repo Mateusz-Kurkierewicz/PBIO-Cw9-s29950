@@ -72,13 +72,17 @@ def save_to_file(sequence: str) -> str:
         file.close()
     return file_name
 
-def main():
-    sequence_length_input = input("Podaj długość sekwencji: ")
-    sequence_length = validate_positive_int(sequence_length_input)
+def get_sequence_id() -> str:
     sequence_id = input("Podaj id sekwencji: ")
     while not validate_sequence_id(sequence_id):
         print("Id sekwencji nie może być puste ani zawierać białych znaków")
         sequence_id = input("Podaj id sekwencji: ")
+    return sequence_id
+
+def main():
+    sequence_length_input = input("Podaj długość sekwencji: ")
+    sequence_length = validate_positive_int(sequence_length_input)
+    sequence_id = get_sequence_id()
     sequence_description = input("Podaj opis sekwencji: ")
     name = input("Podaj imię: ")
     sequence = insert_name(generate_sequence(sequence_length), name)
