@@ -1,6 +1,5 @@
 import random as rnd
 import os
-from typing import override
 
 
 def generate_sequence(length: int) -> str:
@@ -67,10 +66,10 @@ def validate_sequence_id(prompt: str) -> bool:
     has_whitespaces = any(is_space(c) for c in prompt)
     return not has_whitespaces
 
-def save_to_file(sequence: str, file_name: str, override=True) -> str:
-    mode = "w" if override else "a"
+def save_to_file(sequence: str, file_name: str, should_override=True) -> str:
+    mode = "w" if should_override else "a"
     is_empty = not os.path.exists(file_name) or os.path.getsize(file_name) == 0
-    if not is_empty and not override:
+    if not is_empty and not should_override:
         sequence = "\n\n" + sequence
     with open(file=file_name, mode=mode) as file:
         file.writelines(sequence)
@@ -102,8 +101,20 @@ def create_multiple_sequences():
         should_override = True if i == 0 else False
         save_to_file(fasta, "multi_sequences.fasta", should_override)
 
+def replace_all(sequence: str) -> str:
+    return sequence.replace('T', 'U')
+
+def translate_to_mRNA():
+    sequence_length_input = input("Podaj długość sekwencji: ")
+    sequence_length = validate_positive_int(sequence_length_input)
+    sequence = generate_sequence(sequence_length)
+    sequence = replace_all(sequence)
+    formatted = format_fasta("mRNA_seq", "", sequence)
+    save_to_file(formatted, "mrna.fasta")
+
 def main():
-    create_multiple_sequences()
+    translate_to_mRNA()
+    # create_multiple_sequences()
     # sequence_length_input = input("Podaj długość sekwencji: ")
     # sequence_length = validate_positive_int(sequence_length_input)
     # sequence_id = get_sequence_id()
