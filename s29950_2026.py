@@ -104,7 +104,7 @@ def create_multiple_sequences():
 def replace_all(sequence: str) -> str:
     return sequence.replace('T', 'U')
 
-def translate_to_mRNA():
+def create_mRNA():
     sequence_length_input = input("Podaj długość sekwencji: ")
     sequence_length = validate_positive_int(sequence_length_input)
     sequence = generate_sequence(sequence_length)
@@ -112,8 +112,38 @@ def translate_to_mRNA():
     formatted = format_fasta("mRNA_seq", "", sequence)
     save_to_file(formatted, "mrna.fasta")
 
+def generate_sequence_with_distribution(length: int, probabilities: dict) -> str:
+    sequence = ""
+    keys = [k for k in probabilities.keys()]
+    values = [v for v in probabilities.values()]
+    for i in range(length):
+        sequence += rnd.choices(keys, weights=values)[0]
+    return sequence
+
+def validate_float(request: str) -> float:
+    try:
+        return float(input(request))
+    except ValueError:
+        print("Nieprawidłowa wartość!")
+        return validate_float(request)
+
+def create_sequence_with_distribution():
+    sequence_length_input = input("Podaj długość sekwencji: ")
+    sequence_length = validate_positive_int(sequence_length_input)
+    a_prob = validate_float("Podaj prawdopodobieństwo A: ")
+    c_prob = validate_float("Podaj prawdopodobieństwo C: ")
+    g_prob = validate_float("Podaj prawdopodobieństwo G: ")
+    t_prob = validate_float("Podaj prawdopodobieństwo T: ")
+    if a_prob + c_prob + g_prob + t_prob != 1:
+        print("Suma prawdopodobieństw musi być równa 1!")
+        return
+    probabilities = {"A": a_prob, "C": c_prob, "G": g_prob, "T": t_prob}
+    sequence = generate_sequence_with_distribution(sequence_length, probabilities)
+    print(sequence)
+
 def main():
-    translate_to_mRNA()
+    create_sequence_with_distribution()
+    # create_mRNA()
     # create_multiple_sequences()
     # sequence_length_input = input("Podaj długość sekwencji: ")
     # sequence_length = validate_positive_int(sequence_length_input)
